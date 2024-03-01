@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: self-information-app
+  labels:
+    app: self-information-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: self-information-app
+  template:
+    metadata:
+      labels:
+        app: self-information-app
+    spec:
+      containers:
+        - name: self-information-app
+          image: stefankapferer/ost-self-information-app:v0.0.1
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 8443
+              name: https
+          resources:
+            limits:
+              memory: 2048Mi
+            requests:
+              memory: 1024Mi
+          volumeMounts:
+            - mountPath: /srv/web/conf/application.properties
+              name: self-information-app-config
+              subPath: application.properties
+      volumes:
+        - name: self-information-app-config
+          configMap:
+            name: self-information-app-config
